@@ -1,0 +1,49 @@
+{% extends 'layout.html' %}
+{% block content %}
+
+<div class="main">
+    <h1 class="login">로그인</h1>
+    <div class="login_box">
+        <h1 class="id">아이디</h1>
+        <input class="id_box" id="userid" type="text" placeholder="아이디">
+        <h1 class="pw">비밀번호</h1>
+        <input class="pw_box" id="userpw" type="password" placeholder="비밀번호">
+        <h1>
+            <button class="login_btn" onclick="login()">로그인</button>
+        </h1>
+    </div>
+</div>
+<script>
+    function login() {
+        $.ajax({
+            type: "POST",
+            url: "/api/login",
+            data: {id_give: $('#userid').val(), pw_give: $('#userpw').val()},
+            success: function (response) {
+                if (response['result'] == 'success') {
+                    // 로그인이 정상적으로 되면, 토큰을 받아옵니다.
+                    // 이 토큰을 mytoken이라는 키 값으로 쿠키에 저장합니다.
+                    $.cookie('mytoken', response['token']);
+                    alert('로그인 완료!');
+                    $("#beforeLoginNab").addClass("hide");
+                    $("#afterLoginNab").removeClass("hide");
+                    window.location.href = '/index'
+                } else {
+                    // 로그인이 안되면 에러메시지를 띄웁니다.
+                    alert(response['msg'])
+                }
+
+
+            }
+        })
+    }
+
+    function register() {
+        $.ajax({
+            success: function () {
+                window.location.href = '/register'
+            }
+        })
+    }
+</script>
+{% endblock %}
